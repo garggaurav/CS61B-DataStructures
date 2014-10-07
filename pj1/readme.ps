@@ -1,0 +1,1352 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 25 25 587 767
+%%Title: Enscript Output
+%%For: Jonathan R. Shewchuk
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Mon Feb 10 21:34:29 2014
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-enscript 1.6 4
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Times-Roman
+
+% Fonts.
+/Times-Bold /HeaderFont-Bold MF
+/HeaderDateF /HeaderFont-Bold findfont 12 scalefont def
+
+/Times-Roman /HeaderFont-Times MF
+/HeaderHDRF /HeaderFont-Times findfont 14 scalefont def
+
+/HeaderPageNumF /Helvetica-Bold findfont 28.8 scalefont def
+
+/do_header {	% print enscript header
+  gsave
+    d_header_x d_header_y translate
+
+    % light bar
+    0 0 d_header_w d_header_h 2 div Box
+    .95 setgray fill
+
+    % dark gray boxes
+    /dbw d_header_h 2 mul def	% dark box width
+    /dbc .7 def			% dark box color
+
+    % left dark box.
+    0 0 dbw d_header_h Box
+    dbc setgray fill
+
+    0 setgray 
+    HeaderDateF setfont
+    moddatestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 2 div 2 add moveto show
+    modtimestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 5 div moveto show
+
+    % right dark box
+    d_header_w dbw sub 0 dbw d_header_h Box
+    dbc setgray fill
+
+    HeaderPageNumF setfont
+    1 setgray
+    pagenumstr dup
+    stringwidth pop dbw exch sub 2 div d_header_w dbw sub add
+    d_header_h .2 mul moveto show
+
+    % filename
+    0 setgray 
+    HeaderHDRF setfont
+    d_header_w fname stringwidth pop sub 2 div d_header_h 8 div moveto
+    fname show
+
+    % user supplied header string.
+    user_header_p {
+      /h d_header_h 8 div 5 mul def
+
+      % Implement strict enscript compatibility.
+      user_header_center_str () eq user_header_right_str () eq and {
+        d_header_w user_header_left_str stringwidth pop sub 2 div 
+        h moveto user_header_left_str show
+      } {
+        dbw 5 add h moveto user_header_left_str show
+
+        d_header_w user_header_center_str stringwidth pop sub 2 div 
+        h moveto user_header_center_str show
+
+	d_header_w dbw sub 5 sub user_header_right_str stringwidth pop
+	sub h moveto user_header_right_str show
+      } ifelse
+    } if
+
+  grestore
+} def
+%%EndResource
+/d_page_w 742 def
+/d_page_h 562 def
+/d_header_x 0 def
+/d_header_y 526 def
+/d_header_w 742 def
+/d_header_h 36 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 742 def
+/d_footer_h 0 def
+/d_output_w 742 def
+/d_output_h 526 def
+/cols 2 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+25 -587 translate
+/pagenum 1 def
+/fname (readme) def
+/fdir () def
+/ftail (readme) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (02/10/14) def
+/modtimestr (21:34:24) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+5 516 M
+(                               CS 61B Project 1) s
+5 508 M
+(            Color Images, Edge Detection, and Run-Length Encodings) s
+5 500 M
+(                   Due midnight Saturday, February 22, 2014) s
+5 484 M
+(Warning:  This project is time-consuming.  Start early.) s
+5 468 M
+(This is an individual assignment; you may not share code with other students.) s
+5 452 M
+(Getting started:  You will find the code for this assignment in ~cs61b/hw/pj1/.) s
+5 444 M
+(Start by copying it into your own pj1 directory.) s
+5 428 M
+(In this project you will implement two simple image processing operations on) s
+5 420 M
+(color images:  blurring and edge detection.  You will use libraries to read and) s
+5 412 M
+(write files in the TIFF image format.  One option in TIFF files is that they) s
+5 404 M
+(can be compressed if there are many adjacent pixels of the same color; the) s
+5 396 M
+(compressed form is called a run-length encoding.  You will write code to) s
+5 388 M
+(convert an image into a run-length encoding and back.) s
+5 372 M
+(Each image is a rectangular matrix of color pixels, which are indexed as) s
+5 364 M
+(follows \(for a 4x3 image\):) s
+5 348 M
+(                         ------> x) s
+5 332 M
+(                     |   -----------------------------) s
+5 324 M
+(                     |   | 0, 0 | 1, 0 | 2, 0 | 3, 0 |) s
+5 316 M
+(                   y |   -----------------------------) s
+5 308 M
+(                     |   | 0, 1 | 1, 1 | 2, 1 | 3, 1 |) s
+5 300 M
+(                     v   -----------------------------) s
+5 292 M
+(                         | 0, 2 | 1, 2 | 2, 2 | 3, 2 |) s
+5 284 M
+(                         -----------------------------) s
+5 268 M
+(Note that the origin is in the upper left; the x-coordinate increases as you) s
+5 260 M
+(move right, and the y-coordinate increases as you go down.  \(This conforms to) s
+5 252 M
+(Java's graphics commands, though you won't need to use them directly in this) s
+5 244 M
+(project.\)  We use the notation \(i, j\) to denote the pixel whose x-coordinate is) s
+5 236 M
+(i and whose y-coordinate is j.) s
+5 220 M
+(Each pixel has three numbers in the range 0...255 representing the red, green,) s
+5 212 M
+(and blue intensities of the pixel.  These three bytes are known as the RGB) s
+5 204 M
+(values of the image.  A pixel in which all three values are zero is pure black,) s
+5 196 M
+(and a pixel in which all three values are 255 is bright white.  Although Java) s
+5 188 M
+(has a "byte" integer type, its range is -128...127, so we will usually use) s
+5 180 M
+(Java's "short" type for methods that take RGB parameters or return RGB values.) s
+5 164 M
+(Part I:  Image Blurring and Edge Detection) s
+5 156 M
+(==========================================) s
+5 148 M
+(This part is worth 40% of your total score.  \(8 points out of 20\).) s
+5 132 M
+(Implement a class called PixImage that stores a color image.  The PixImage) s
+5 124 M
+(class will include methods for reading or changing the image's pixels.  It will) s
+5 116 M
+(also include a method for blurring an image and a method for detecting edges in) s
+5 108 M
+(an image.  We have provided a skeleton file named PixImage.java that includes) s
+5 100 M
+(prototypes for the public methods the class offers.  You are required to) s
+5 92 M
+(provide implementations of all these methods.) s
+5 76 M
+(A PixImage is described by its size and the RGB values of each pixel, but it is) s
+5 68 M
+(up to you to decide _how_ a PixImage stores a color image.  You should) s
+5 60 M
+(certainly use one or more arrays; otherwise, you have some freedom to choose) s
+5 52 M
+(the details.) s
+5 36 M
+(The size of a PixImage is determined when it is constructed, and does not) s
+5 28 M
+(change afterwards.  There is one PixImage constructor, which takes two integers) s
+5 20 M
+(as input, representing the width and height of the image, and returns an image) s
+5 12 M
+(of the specified size.  For example, the statement) s
+376 516 M
+(    PixImage image = new PixImage\(w, h\);) s
+376 500 M
+(should create a w x h Image object.  In your implementation, you may define any) s
+376 492 M
+(fields, additional methods, additional classes, or other .java files you wish,) s
+376 484 M
+(but you cannot change the prototypes in PixImage.java.  We will test your code) s
+376 476 M
+(by calling your public methods directly, so it is important that you follow) s
+376 468 M
+(this rule.  Please read PixImage.java carefully for an explanation of what) s
+376 460 M
+(methods you must write.  The most important of these are boxBlur\(\), a simple) s
+376 452 M
+(image blurring algorithm, and sobelEdges\(\), an edge detection algorithm.) s
+376 436 M
+(The pixels of a PixImage can be changed with the method setPixel\(\).  However,) s
+376 428 M
+(the methods boxBlur\(\) and sobelEdges\(\) should NEVER change "this" original) s
+376 420 M
+(PixImage; they should construct a new PixImage and update it to show the) s
+376 412 M
+(results.  The pixels in the new, output PixImage should depend only on the) s
+376 404 M
+(pixels in "this" original PixImage.  To obtain correct behavior, you will be) s
+376 396 M
+(working with two PixImages simultaneously, reading pixels from one and writing) s
+376 388 M
+(\(modifying\) pixels in the other.) s
+376 372 M
+(In an image, a pixel not on the boundary has nine "neighbors":  the pixel) s
+376 364 M
+(itself and the eight pixels immediately surrounding it \(to the north, south,) s
+376 356 M
+(east, and west, and the four diagonal neighbors\).  For the sake of exposition,) s
+376 348 M
+(we consider each pixel to be its own "neighbor".  A pixel on the boundary has) s
+376 340 M
+(six neighbors if it is not a corner pixel; only four neighbors if it is a) s
+376 332 M
+(corner pixel.  In both boxBlur\(\) and sobelEdges\(\), the contents of any) s
+376 324 M
+(particular output pixel depend only on the contents of its neighbors in the) s
+376 316 M
+(input image.) s
+376 300 M
+(boxBlur\(\) simply sets each output pixel to be the average of its neighbors) s
+376 292 M
+(\(including itself\) in "this" input PixImage.  This means summing up the) s
+376 284 M
+(neighbors and dividing by the number of neighbors \(4, 6, or 9\).  The sum might) s
+376 276 M
+(not be divisible by the number of neighbors, but the output pixel values must) s
+376 268 M
+(be integers, so we will allow Java to round non-integer quotients toward zero) s
+376 260 M
+(\(as it always does when it divides one integer by another\).) s
+376 244 M
+(Each color \(red, green, blue\) is blurred separately.  The red input should have) s
+376 236 M
+(NO effect on the green or blue outputs, etc.) s
+376 220 M
+(boxBlur\(\) takes a parameter "numIterations" that specifies a number of repeated) s
+376 212 M
+(iterations of box blurring to perform.  If numIterations is zero or negative,) s
+376 204 M
+(boxBlur\(\) should return "this" PixImage \(rather than construct a new PixImage\).) s
+376 196 M
+(If numIterations is positive, the return value is a newly constructed PixImage) s
+376 188 M
+(showing what "this" PixImage would become after being blurred "numIterations") s
+376 180 M
+(times.  IMPORTANT:  each iteration of blurring should be writing to a) s
+376 172 M
+(_different_ PixImage than the one produced by the previous iteration.  You) s
+376 164 M
+(should NEVER be reading and writing pixels in the same image simultaneously,) s
+376 156 M
+(and you will get the wrong answer if you try.) s
+376 140 M
+(sobelEdges\(\) implements the Sobel edge detection algorithm.  The output) s
+376 132 M
+(PixImage will be a grayscale image \(i.e. red == green == blue for every pixel\)) s
+376 124 M
+(with light pixels where edges appear in "this" input PixImage \(i.e. where) s
+376 116 M
+(regions of contrasting colors meets\) and dark pixels everywhere else.  If you) s
+376 108 M
+(imagine that the image is a continuous field of color, the Sobel algorithm) s
+376 100 M
+(computes an approximate gradient of the color intensities at each pixel.) s
+376 84 M
+(For each pixel \(x, y\), you will compute an approximate gradient \(gx, gy\) for) s
+376 76 M
+(each of the three colors.  As with blurring, the intensity of pixel \(x, y\) in) s
+376 68 M
+(the output PixImage depends only on the neighbors of \(x, y\) in "this" input) s
+376 60 M
+(PixImage, and the red, green, and blue intensities are treated separately at) s
+376 52 M
+(first.  The red gradient \(gx, gy\) is a 2D vector that locally approximates the) s
+376 44 M
+(direction of greatest increase of the red pixel intensities \(and depends ONLY) s
+376 36 M
+(on the red intensities of the pixels.\)  If two regions of very different red) s
+376 28 M
+(intensities meet at the pixel \(x, y\), then \(gx, gy\) is a long vector that is) s
+376 20 M
+(roughly perpendicular to the boundary where the constrasting regions meet.) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+25 -587 translate
+/pagenum 2 def
+/fname (readme) def
+/fdir () def
+/ftail (readme) def
+% User defined strings:
+/pagenumstr (2) def
+/moddatestr (02/10/14) def
+/modtimestr (21:34:24) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+5 508 M
+(We compute the red gradient \(gx, gy\) with the following _convolutions_.) s
+5 492 M
+(         --------------     ----------------------------------------------) s
+5 484 M
+(         | 1 | 0 | -1 |     | x - 1, y - 1 |   x  , y - 1 | x + 1, y - 1 |) s
+5 476 M
+(         --------------     ----------------------------------------------) s
+5 468 M
+(    gx = | 2 | 0 | -2 |  *  | x - 1,   y   |   x  ,   y   | x + 1,   y   |) s
+5 460 M
+(         --------------     ----------------------------------------------) s
+5 452 M
+(         | 1 | 0 | -1 |     | x - 1, y + 1 |   x  , y + 1 | x + 1, y + 1 |) s
+5 444 M
+(         --------------     ----------------------------------------------) s
+5 428 M
+(         ----------------   ----------------------------------------------) s
+5 420 M
+(         |  1 |  2 |  1 |   | x - 1, y - 1 |   x  , y - 1 | x + 1, y - 1 |) s
+5 412 M
+(         ----------------   ----------------------------------------------) s
+5 404 M
+(    gy = |  0 |  0 |  0 | * | x - 1,   y   |   x  ,   y   | x + 1,   y   |) s
+5 396 M
+(         ----------------   ----------------------------------------------) s
+5 388 M
+(         | -1 | -2 | -1 |   | x - 1, y + 1 |   x  , y + 1 | x + 1, y + 1 |) s
+5 380 M
+(         ----------------   ----------------------------------------------) s
+5 364 M
+(The boxes on the right store the red pixel intensities for the neighbors of \(x,) s
+5 356 M
+(y\).  The convolution operation "*" simply means that we multiply each box on) s
+5 348 M
+(the left with the corresponding box on the right, then sum the nine products.) s
+5 340 M
+(\(It's like an inner product, aka dot product, of two vectors of length 9.) s
+5 332 M
+(Note that this is NOT matrix multiplication!\)  The green and blue gradients are) s
+5 324 M
+(defined likewise.) s
+5 308 M
+(\(If you are interested in further details, see the Wikipedia page) s
+5 300 M
+(http://en.wikipedia.org/wiki/Sobel_operator .\)) s
+5 284 M
+(This gives us three gradient vectors for each pixel \(red, green, and blue\).) s
+5 276 M
+(Define the _energy_ of a gradient vector \(gx, gy\) to be the square of its) s
+5 268 M
+(length; by Pythagoras' Theorem, the energy is gx * gx + gy * gy.  Define the) s
+5 260 M
+(_energy_ of a pixel to be the sum of its red, green, and blue energies.) s
+5 252 M
+(\(If you think of a pixel's three gradients together as being a vector in) s
+5 244 M
+(a six-dimensional space, the pixel's energy is the square of the length of that) s
+5 236 M
+(six-dimensional vector.\)) s
+5 220 M
+(    energy\(x, y\) = gx\(red\)^2 + gy\(red\)^2 + gx\(green\)^2 + gy\(green\)^2 +) s
+5 212 M
+(                   gx\(blue\)^2 + gy\(blue\)^2.) s
+5 196 M
+(IMPORTANT:  You must compute the energy EXACTLY.  The pixel intensities are of) s
+5 188 M
+(type "short", but the energy is usually too large to fit in a "short".  Thus) s
+5 180 M
+(you must cast all the gradient vectors to type "long" or "int" BEFORE you) s
+5 172 M
+(compute any squares, and you must keep the results as "long" or "int" for the) s
+5 164 M
+(rest of the computation.) s
+5 148 M
+(The maximum possible value of a Sobel gradient \(for one color\) is \(1020, 1020\),) s
+5 140 M
+(so each pixel's energy \(combining all three colors\) is a number in the range) s
+5 132 M
+(0...6,242,400.  We have provided a method mag2gray\(\) in the PixImage class) s
+5 124 M
+(that takes a pixel energy of type "long" and flattens it down to a grayscale) s
+5 116 M
+(intensity in the range 0...255.  The map is logarithmic, so that images over a) s
+5 108 M
+(wide range of intensities will reveal their edges.  However, energies of) s
+5 100 M
+(roughly 5,080 and below map to intensity zero, so very-low contrast edges do) s
+5 92 M
+(not appear in the output PixImage.  Don't worry if you don't understand) s
+5 84 M
+(mag2gray\(\); JUST DON'T CHANGE mag2gray\(\).) s
+5 68 M
+(In your output PixImage, set the red, green, and blue intensities of the pixel) s
+5 60 M
+(\(x, y\) to be the value mag2gray\(energy\(x, y\)\).) s
+5 44 M
+(Pixels on the boundary of the output image require special treatment, because) s
+5 36 M
+(they do not have nine neighbors.  We treat them by _reflecting_ the image) s
+5 28 M
+(across each image boundary.  \(Imagine the image is sitting right on the shore) s
+5 20 M
+(of a lake, so an upside-down copy of the image is reflected below it.\)  Thus,) s
+5 12 M
+(we treat the pixel \(-1, 2\) as if it had the same RGB intensities as \(0, 2\), and) s
+5 4 M
+(the pixel \(1, height\) as if it had the same RGB intensities as \(1, height - 1\).) s
+376 516 M
+(Then we compute the Sobel convolutions as usual.  The reflections prevent) s
+376 508 M
+(spurious "edges" from appearing on the boundaries of the image.) s
+376 492 M
+(\(Hint:  programming will be a lot easier if you write helper functions that do) s
+376 484 M
+(the reflection for you, and use them for every pixel access in your edge) s
+376 476 M
+(detector, so you don't have to think about it again.\)) s
+376 460 M
+(We have provided Java classes to help you see your output images and debug your) s
+376 452 M
+(implementation of Part I, in these files:) s
+376 436 M
+(    Blur.java) s
+376 428 M
+(    Sobel.java) s
+376 412 M
+(The main\(\) methods in these classes read an image in TIFF format, use your code) s
+376 404 M
+(to perform blurring and/or edge detection, write the modified image in TIFF) s
+376 396 M
+(format, and display the input and output images.  You will need to compile them) s
+376 388 M
+(against the JAI image libraries in the .jar files we have included, which) s
+376 380 M
+(may require you to add the .jar files to your "classpath".  In Unix:) s
+376 364 M
+(    javac -cp "jai_core.jar:jai_codec.jar" *.java) s
+376 348 M
+(Both programs take one or two command-line arguments.  The first argument) s
+376 340 M
+(specifies the name of an input image file in TIFF format.  \(If you specify no) s
+376 332 M
+(arguments, the programs will remind you how to use them.\)  The optional second) s
+376 324 M
+(argument specifies the number of iterations of your box blurring filter to) s
+376 316 M
+(perform.  For example, if you run) s
+376 300 M
+(    java -cp ".:jai_core.jar:jai_codec.jar" Blur image.tiff 3) s
+376 284 M
+(then Blur will load the image from image.tiff, perform three iterations of) s
+376 276 M
+(blurring, write the blurred image to a file named blur_image.tiff, and display) s
+376 268 M
+(the input and output images.  If you omit the second command-line argument, the) s
+376 260 M
+(default number of iterations is 1.) s
+376 244 M
+(The Sobel program does Sobel edge detection.  Optionally, it will also perform) s
+376 236 M
+(iterations of blurring prior to edge detection.  A small amount of blurring) s
+376 228 M
+(tends to make edge detection more robust in images whose lines of contrast are) s
+376 220 M
+(not very sharp.  If you run) s
+376 204 M
+(    java Sobel image.tiff 5) s
+376 188 M
+(then Sobel will load the image from image.tiff, perform five iterations of) s
+376 180 M
+(blurring, perform Sobel edge detection on the blurred image, write the blurred) s
+376 172 M
+(image to a file named blur_image.tiff, write the grayscale-edge image to a file) s
+376 164 M
+(named edge_image.tiff, and display all three images \(1 input, 2 output\).  If) s
+376 156 M
+(you omit the second command-line argument, no blurring is performed, and no) s
+376 148 M
+(blurred image is written nor displayed.  \(Sobel also has an optional third) s
+376 140 M
+(command-line argument that you shouldn't try until you complete Part III.\)) s
+376 124 M
+(We have included some .tiff files for you to play with.  There is also a bit of) s
+376 116 M
+(test code for the boxBlur\(\) and sobelEdges\(\) methods in the main\(\) method of) s
+376 108 M
+(PixImage.java.) s
+376 92 M
+(You might find it useful to check out the methods in ImageUtils.java that read) s
+376 84 M
+(and write the TIFF files.  We have also included a copy of the TIFF standard) s
+376 76 M
+(\(the file TIFF6.pdf\) for those who are curious.  Neither of these things are) s
+376 68 M
+(necessary to complete the project, but if you want more control over writing) s
+376 60 M
+(images to files for your own entertainment, it is easy to modify Blur.java or) s
+376 52 M
+(Sobel.java for that purpose.) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+90 rotate
+25 -587 translate
+/pagenum 3 def
+/fname (readme) def
+/fdir () def
+/ftail (readme) def
+% User defined strings:
+/pagenumstr (3) def
+/moddatestr (02/10/14) def
+/modtimestr (21:34:24) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+5 508 M
+(Part II:  Converting a Run-Length Encoding to an Image) s
+5 500 M
+(======================================================) s
+5 492 M
+(This part is worth 25% of your total score.  \(5 points out of 20\).) s
+5 476 M
+(A large number of large image files can consume a lot of disk space.  Some) s
+5 468 M
+(PixImages can be stored more compactly if we represent them as "run-length) s
+5 460 M
+(encodings."  Imagine taking all the rows of pixels in the image, and connecting) s
+5 452 M
+(them into one long strip.  Think of the pixels as being numbered thusly:) s
+5 436 M
+(                        -----------------------------) s
+5 428 M
+(                        |   0  |   1  |   2  |   3  |) s
+5 420 M
+(                        -----------------------------) s
+5 412 M
+(                        |   4  |   5  |   6  |   7  |) s
+5 404 M
+(                        -----------------------------) s
+5 396 M
+(                        |   8  |   9  |  10  |  11  |) s
+5 388 M
+(                        -----------------------------) s
+5 372 M
+(Some images have long strips of pixels of the same color \(RGB intensities\).) s
+5 364 M
+(In particular, the grayscale images produced by sobelEdges\(\) can have large) s
+5 356 M
+(uniform regions, especially where no edges are detected.  Run-length encoding) s
+5 348 M
+(is a technique in which a strip of identical consecutive pixels \(possibly) s
+5 340 M
+(spanning several rows of the image\) are represented as a single record or) s
+5 332 M
+(object.  For instance, the following strip of intensities:) s
+5 316 M
+(            ------------------------------------------------------) s
+5 308 M
+(            | 7 | 7 | 7 | 88 | 88 | 88 | 88 | 88 | 0 | 0 | 0 | 0 |) s
+5 300 M
+(            ------------------------------------------------------) s
+5 292 M
+(              0   1   2    3    4    5    6    7   8   9   10  11) s
+5 276 M
+(could be represented with just three records, each representing one "run":) s
+5 260 M
+(                             --------------------) s
+5 252 M
+(                             | 7,3 | 88,5 | 0,4 |) s
+5 244 M
+(                             --------------------) s
+5 228 M
+("7,3" means that there are three consecutive 7's, followed by "88,5" to signify) s
+5 220 M
+(five consecutive 88's, and then "0,4" for four jet black pixels.  With this) s
+5 212 M
+(encoding, a huge image whose pixels are mostly one color \(like daily comic) s
+5 204 M
+(strips, which are mostly white\) can be stored in a small amount of memory.  The) s
+5 196 M
+(TIFF image format has run-length encoding built in, so in these cases it can) s
+5 188 M
+(produce shorter image files.  \(Note that the TIFF encoder we'll be using only) s
+5 180 M
+(gives us a savings when there are runs of pixels for which all three colors are) s
+5 172 M
+(identical.  However, it is also possible to write TIFF files in which the three) s
+5 164 M
+(colors are separated, so one can exploit runs within a single color.\)) s
+5 148 M
+(Your task is to implement a RunLengthEncoding class, which represents a) s
+5 140 M
+(run-length encoding as a linked list of "run" objects.  It is up to you whether) s
+5 132 M
+(to use a singly- or doubly-linked list, but a doubly-linked list might make) s
+5 124 M
+(Part IV easier.  \(You are not permitted to use large arrays for this purpose.\)) s
+5 108 M
+(Because this is a data structures course, please use your own list class\(es\) or) s
+5 100 M
+(ones you have learned in class.  In future courses, it will sometimes make more) s
+5 92 M
+(sense for you to use a linked list class written by somebody else, such as) s
+5 84 M
+(java.util.LinkedList.  However, in CS 61B this is forbidden, because I want you) s
+5 76 M
+(to always understand every detail of how your data structures work.  Likewise,) s
+5 68 M
+(you may not use java.util.Vector or other data structures libraries.) s
+376 508 M
+(Part II\(a\):  Implement two simple constructors for RunLengthEncodings.  One) s
+376 500 M
+(constructs a run-length encoding of a jet black image.  The other constructs) s
+376 492 M
+(a run-length encoding based on four arrays provided as parameters to the) s
+376 484 M
+(constructor.  These arrays tell you exactly what runs your run-length encoding) s
+376 476 M
+(should contain, so you are simply converting arrays to a linked list.  \(Read) s
+376 468 M
+(the prototype in RunLengthEncoding.java.\)) s
+376 452 M
+(Part II\(b\):  Your run-length encodings will be useful only if other classes) s
+376 444 M
+(are able to read your encodings after you create them.  Therefore, implement) s
+376 436 M
+(the iterator\(\) method in the RunLengthEncoding class and the RunIterator\(\)) s
+376 428 M
+(constructor, the hasNext\(\) method, and the next\(\) method in the RunIterator) s
+376 420 M
+(class.) s
+376 404 M
+(These methods work together to provide an interface by which other classes can) s
+376 396 M
+(read the runs in your run-length encoding, one by one.  A calling application) s
+376 388 M
+(begins by using RunLengthEncoding.iterator\(\) to create a new RunIterator i that) s
+376 380 M
+(points to the first run in the run-length encoding--the run that contains pixel) s
+376 372 M
+(\(0, 0\).  \(Outside classes should never call the RunIterator\(\) constructor) s
+376 364 M
+(directly; only RunLengthEncoding.iterator\(\) should do that.\)  Each time) s
+376 356 M
+(i.next\(\) is invoked, it returns the next run--represented as an array of four) s
+376 348 M
+(ints--until every run has been returned.  The returned array encodes a run by) s
+376 340 M
+(storing the length of the run \(the number of pixels\) at index zero, the red) s
+376 332 M
+(pixel intensity at index one, the green pixel intensity at index two, and the) s
+376 324 M
+(blue pixel intensity at index three.  \(This four-int array is constructed in) s
+376 316 M
+(next\(\), and can be discarded by the calling method after use.  This array) s
+376 308 M
+(should not be part of your RunLengthEncoding data structure!  It must be) s
+376 300 M
+(freshly constructed for the sole purpose of returning four ints.\)) s
+376 284 M
+(Given an iterator i, i.hasNext\(\) returns true if it has more runs to return.) s
+376 276 M
+(It returns false if i has already been used to return every run, letting the) s
+376 268 M
+(calling program know that there are no more runs in the encoding.  Calling) s
+376 260 M
+(programs should always check i.hasNext\(\) before they call i.next\(\); if they) s
+376 252 M
+(call i.next\(\) at the end of the encoding, i.next\(\) may throw an exception and) s
+376 244 M
+(crash your program.  \(If a calling application wants to reset i so it points) s
+376 236 M
+(back to the first run again, it has to construct a brand new RunIterator.\)) s
+376 220 M
+(Please read the file RunIterator.java carefully for more information.  You) s
+376 212 M
+(might also find it helpful to look up the Iterator class in the Java API.) s
+376 196 M
+(Part II\(c\):  Implement a toPixImage\(\) method in the RunLengthEncoding class,) s
+376 188 M
+(which converts a run-length encoding to a PixImage object.) s
+376 172 M
+(Read RunLengthEncoding.java carefully for an explanation of what methods) s
+376 164 M
+(you must write.  The fields of the PixImage class MUST be private, and the) s
+376 156 M
+(RunLengthEncoding class cannot manipulate these fields directly.  Hence,) s
+376 148 M
+(the toPixImage\(\) method will rely upon the PixImage\(\) constructor and the) s
+376 140 M
+(setPixel\(\) method.) s
+376 124 M
+(You cannot change any of the prototypes in RunLengthEncoding.java or) s
+376 116 M
+(RunIterator.java--except the RunIterator\(\) constructor, which you can give any) s
+376 108 M
+(signature you like, as it is called only from RunLengthEncoding.iterator\(\).) s
+376 100 M
+(We will test your code by calling your public methods directly.) s
+376 84 M
+(There is a bit of test code for Parts II, III, and IV in the main\(\) method of) s
+376 76 M
+(RunLengthEncoding.java.) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+90 rotate
+25 -587 translate
+/pagenum 4 def
+/fname (readme) def
+/fdir () def
+/ftail (readme) def
+% User defined strings:
+/pagenumstr (4) def
+/moddatestr (02/10/14) def
+/modtimestr (21:34:24) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+5 508 M
+(Part III:  Converting an Image to a Run-Length Encoding) s
+5 500 M
+(=======================================================) s
+5 492 M
+(This part is worth 25% of your total score.  \(5 points out of 20\).) s
+5 476 M
+(Write a RunLengthEncoding constructor that takes a PixImage object as its sole) s
+5 468 M
+(parameter and converts it into a run-length encoding of the PixImage.) s
+5 452 M
+(The fields of the PixImage class MUST be private, so the RunLengthEncoding) s
+5 444 M
+(constructor will rely upon the getWidth\(\), getHeight\(\), getRed\(\), getGreen\(\),) s
+5 436 M
+(and getBlue\(\) methods.) s
+5 420 M
+(Testing) s
+5 412 M
+(-------) s
+5 404 M
+(The following is worth 1 point out of the 5, but should probably be done as) s
+5 396 M
+(soon as you can during Part III.) s
+5 380 M
+(Your RunLengthEncoding implementation is required to have a check\(\) method,) s
+5 372 M
+(which walks through your run-length encoding and checks its validity.) s
+5 364 M
+(Specifically, it should print a warning message if any of the following) s
+5 356 M
+(problems are found:) s
+5 340 M
+(    - If two consecutive runs have exactly the same type of contents.) s
+5 332 M
+(      For instance, a "99,12" run followed by an "99,8" run is illegal, because) s
+5 324 M
+(      they should have been consolidated into a single run of twenty 99's.) s
+5 316 M
+(    - If the sum of all the run lengths doesn't equal the size \(in pixels\) of) s
+5 308 M
+(      the PixImage; i.e. its width times its height.) s
+5 300 M
+(    - If a run has a length less than 1.) s
+5 284 M
+(You may find that the check\(\) method is very useful in helping to debug your) s
+5 276 M
+(RunLengthEncoding\(\) constructors and setPixel\(\) in Part IV.  I also recommend) s
+5 268 M
+(implementing a toString\(\) method for your RunLengthEncoding so you can print) s
+5 260 M
+(and examine it to help debugging.) s
+5 244 M
+(If the Sobel program is given three \(or more\) command-line arguments,) s
+5 236 M
+(regardless of what the third argument is, it will write the grayscale-edge) s
+5 228 M
+(image twice, once as an uncompressed TIFF file and once as a run-length encoded) s
+5 220 M
+(TIFF file.  The two TIFF files will be different and have different lengths,) s
+5 212 M
+(but the images should look identical.  If they don't, there is probably a bug) s
+5 204 M
+(in your run-length encoding method or your RunIterator.) s
+5 188 M
+(You might find it interesting to compare the sizes of the two TIFF files.  \(Not) s
+5 180 M
+(surprisingly, the disparity is greatest for the input file black.tiff, which is) s
+5 172 M
+(all black pixels.\)) s
+376 508 M
+(Part IV:  Changing a Pixel in a Run-Length Encoding) s
+376 500 M
+(===================================================) s
+376 492 M
+(The last part is the hardest, but it is only worth 10% of the total score) s
+376 484 M
+(\(2 points out of 20\), so don't panic if you can't finish it.) s
+376 468 M
+(Implement the setPixel\(\) method of the RunLengthEncoding class, which is) s
+376 460 M
+(similar to the setPixel\(\) method of the PixImage class.  However, this code is) s
+376 452 M
+(much trickier to write.  Observe that setPixel\(\) can lengthen, or even shorten,) s
+376 444 M
+(an existing run-length encoding.  To change a pixel in a run-length encoded) s
+376 436 M
+(image, you will need to find the right run in the linked list, and sometimes) s
+376 428 M
+(break it apart into two or three runs.  If the changed pixel is adjacent to) s
+376 420 M
+(other pixels of identical color, you should consolidate runs to keep memory use) s
+376 412 M
+(down.  \(Your check\(\) method ensures that your encoding is as compact as) s
+376 404 M
+(possible.\)) s
+376 388 M
+(IMPORTANT:  For full points, your setPixel\(\) method must run in time) s
+376 380 M
+(proportional to the number of runs in the encoding.  You MAY NOT convert the) s
+376 372 M
+(run-length encoding to a PixImage object, change the pixel in the PixImage, and) s
+376 364 M
+(then convert back to a run-length encoding; not only is that much too slow, it) s
+376 356 M
+(will be considered CHEATING and punished accordingly.) s
+376 340 M
+(Test Code) s
+376 332 M
+(---------) s
+376 324 M
+(We are still working on an autograder for the project, and will provide it when) s
+376 316 M
+(it is ready.  Until then, there is some test code in the main\(\) methods of both) s
+376 308 M
+(PixImage and RunLengthEncoding, and the programs Blur and Sobel can also help.) s
+376 292 M
+(The autograder will assign some, but not all, of the points for the project.) s
+376 284 M
+(Additional points will be assigned by a human reader for partly finished code) s
+376 276 M
+(and for your check\(\) method, which is not autogradeable.  Points may be) s
+376 268 M
+(subtracted if you break some of the rules stated above, especially the rules on) s
+376 260 M
+(where you must use arrays and where you must use linked lists.) s
+376 244 M
+(Submitting your Solution) s
+376 236 M
+(------------------------) s
+376 228 M
+(Make sure that your program compiles and runs on the _lab_ machines with the) s
+376 220 M
+(autograding program before you submit it.  Change \(cd\) to your pj1 directory,) s
+376 212 M
+(which should contain PixImage.java, RunLengthEncoding.java, RunIterator.java,) s
+376 204 M
+(and any other .java files you wish to submit.  If your implementation uses) s
+376 196 M
+(.java files in addition to those we have specified, have no fear:  the "submit") s
+376 188 M
+(program will ask you which .java files in your pj1 directory you want to) s
+376 180 M
+(submit.  From your pj1 directory, type "submit pj1".) s
+376 164 M
+(After submitting, if you realize your solution is flawed, you may fix it and) s
+376 156 M
+(submit again.  You may submit as often as you like.  Only the last version you) s
+376 148 M
+(submit will be graded, unless you inform your reader promptly that you would) s
+376 140 M
+(prefer to have an earlier submission graded instead.) s
+376 124 M
+(If your submission is late, you will lose 1% of your earned score for every two) s
+376 116 M
+(hours \(rounded up\) your project is late.) s
+376 100 M
+(Afterthought) s
+376 92 M
+(------------) s
+376 84 M
+(Our own John Canny, a professor right here in the Berkeley CS department,) s
+376 76 M
+(invented an "optimal" edge detector, which is a more sophisticated version of) s
+376 68 M
+(what we've done in this project.  If you're interested, see the Wikipedia page) s
+376 60 M
+(http://en.wikipedia.org/wiki/Canny_edge_detector .) s
+_R
+S
+%%Trailer
+%%Pages: 4
+%%DocumentNeededResources: font Times-Roman Courier-Bold Courier 
+%%+ font Times-Bold 
+%%EOF
