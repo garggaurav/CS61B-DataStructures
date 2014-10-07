@@ -17,6 +17,9 @@ once as an uncompressed TIFF file and once as a run-length encoded TIFF file.
 Example: java Sobel highcontrast.tiff 1 compress
 
 
+  Project Description:
+
+
 
                               CS 61B Project 1
             Color Images, Edge Detection, and Run-Length Encodings
