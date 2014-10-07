@@ -1,0 +1,24 @@
+#BlueJ class context
+comment0.params=
+comment0.target=HashTable()
+comment1.params=n
+comment1.target=HashTable(int)
+comment10.params=n
+comment10.target=boolean\ isPrime(int)
+comment2.params=key\ value
+comment2.target=void\ insert(java.lang.Object,\ java.lang.Object)
+comment3.params=code
+comment3.target=int\ compFunction(int)
+comment4.params=key
+comment4.target=java.lang.Object\ find(java.lang.Object)
+comment5.params=key
+comment5.target=boolean\ isPresent(java.lang.Object)
+comment6.params=key
+comment6.target=java.lang.Object\ remove(java.lang.Object)
+comment7.params=
+comment7.target=int\ size()
+comment8.params=
+comment8.target=boolean\ isEmpty()
+comment9.params=n
+comment9.target=int\ nextPrime(int)
+numComments=11

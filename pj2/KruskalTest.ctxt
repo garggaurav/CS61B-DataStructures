@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.params=g\ vertArray
+comment0.target=void\ addRandomEdges(graph.WUGraph,\ java.lang.Object[])
+comment1.params=t\ current\ prev\ maxOnPath\ maxEdge
+comment1.target=void\ DFS(graph.WUGraph,\ DFSVertex,\ DFSVertex,\ int[],\ int)
+comment2.params=g\ t\ vertArray
+comment2.target=void\ DFSTest(graph.WUGraph,\ graph.WUGraph,\ DFSVertex[])
+comment3.params=args
+comment3.target=void\ main(java.lang.String[])
+numComments=4

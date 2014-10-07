@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.params=numElements
+comment0.target=DisjointSets(int)
+comment0.text=\n\ \ Construct\ a\ disjoint\ sets\ object.\n\n\ \ @param\ numElements\ the\ initial\ number\ of\ elements--also\ the\ initial\n\ \ number\ of\ disjoint\ sets,\ since\ every\ element\ is\ initially\ in\ its\ own\ set.\n
+comment1.params=root1\ root2
+comment1.target=void\ union(int,\ int)
+comment1.text=\n\ \ union()\ unites\ two\ disjoint\ sets\ into\ a\ single\ set.\ \ A\ union-by-size\n\ \ heuristic\ is\ used\ to\ choose\ the\ new\ root.\ \ This\ method\ will\ corrupt\n\ \ the\ data\ structure\ if\ root1\ and\ root2\ are\ not\ roots\ of\ their\ respective\n\ \ sets,\ or\ if\ they're\ identical.\n\n\ \ @param\ root1\ the\ root\ of\ the\ first\ set.\n\ \ @param\ root2\ the\ root\ of\ the\ other\ set.\n
+comment2.params=x
+comment2.target=int\ find(int)
+comment2.text=\n\ \ find()\ finds\ the\ (int)\ name\ of\ the\ set\ containing\ a\ given\ element.\n\ \ Performs\ path\ compression\ along\ the\ way.\n\n\ \ @param\ x\ the\ element\ sought.\n\ \ @return\ the\ set\ containing\ x.\n
+comment3.params=args
+comment3.target=void\ main(java.lang.String[])
+comment3.text=\n\ \ main()\ is\ test\ code.\ \ All\ the\ find()s\ on\ the\ same\ output\ line\ should\ be\n\ \ identical.\n
+numComments=4

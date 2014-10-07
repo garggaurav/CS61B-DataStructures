@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Entry()
+comment1.params=k\ v
+comment1.target=Entry(java.lang.Object,\ java.lang.Object)
+comment2.params=
+comment2.target=java.lang.Object\ value()
+comment3.params=
+comment3.target=java.lang.Object\ key()
+comment4.params=k
+comment4.target=boolean\ equals(java.lang.Object)
+numComments=5

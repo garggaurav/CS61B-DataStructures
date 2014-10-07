@@ -1,0 +1,8 @@
+#BlueJ class context
+comment0.params=vertArray
+comment0.target=int\ vertexTest(java.lang.Object[])
+comment1.params=vertArray
+comment1.target=int\ edgeTest(java.lang.Object[])
+comment2.params=args
+comment2.target=void\ main(java.lang.String[])
+numComments=3

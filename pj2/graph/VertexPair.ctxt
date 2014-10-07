@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.params=o1\ o2
+comment0.target=VertexPair(java.lang.Object,\ java.lang.Object)
+comment1.params=
+comment1.target=int\ hashCode()
+comment1.text=\n\ hashCode()\ returns\ a\ hashCode\ equal\ to\ the\ sum\ of\ the\ hashCodes\ of\ each\n\ of\ the\ two\ objects\ of\ the\ pair,\ so\ that\ the\ order\ of\ the\ objects\ will\n\ not\ affect\ the\ hashCode.\ \ Self-edges\ are\ treated\ differently\:\ \ we\ don't\n\ add\ an\ object's\ hashCode\ to\ itself,\ since\ the\ result\ would\ always\ be\ even.\n\ We\ add\ one\ to\ the\ hashCode\ so\ that\ a\ self-edge\ will\ not\ collide\ with\ the\n\ object\ itself\ if\ vertices\ and\ edges\ are\ stored\ in\ the\ same\ hash\ table.\n
+comment2.params=o
+comment2.target=boolean\ equals(java.lang.Object)
+comment2.text=\n\ equals()\ returns\ true\ if\ this\ VertexPair\ represents\ the\ same\ unordered\n\ pair\ of\ objects\ as\ the\ parameter\ "o".\ \ The\ order\ of\ the\ pair\ does\ not\n\ affect\ the\ equality\ test,\ so\ (u,\ v)\ is\ found\ to\ be\ equal\ to\ (v,\ u).\n
+numComments=3

@@ -1,0 +1,1162 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 25 25 587 767
+%%Title: Enscript Output
+%%For: Jonathan R. Shewchuk
+%%Creator: GNU Enscript 1.6.6
+%%CreationDate: Sun Apr 13 02:56:46 2014
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 6
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 6
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-enscript 1.6 6
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Times-Roman
+
+% Fonts.
+/Times-Bold /HeaderFont-Bold MF
+/HeaderDateF /HeaderFont-Bold findfont 12 scalefont def
+
+/Times-Roman /HeaderFont-Times MF
+/HeaderHDRF /HeaderFont-Times findfont 14 scalefont def
+
+/HeaderPageNumF /Helvetica-Bold findfont 28.8 scalefont def
+
+/do_header {	% print enscript header
+  gsave
+    d_header_x d_header_y translate
+
+    % light bar
+    0 0 d_header_w d_header_h 2 div Box
+    .95 setgray fill
+
+    % dark gray boxes
+    /dbw d_header_h 2 mul def	% dark box width
+    /dbc .7 def			% dark box color
+
+    % left dark box.
+    0 0 dbw d_header_h Box
+    dbc setgray fill
+
+    0 setgray 
+    HeaderDateF setfont
+    moddatestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 2 div 2 add moveto show
+    modtimestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 5 div moveto show
+
+    % right dark box
+    d_header_w dbw sub 0 dbw d_header_h Box
+    dbc setgray fill
+
+    HeaderPageNumF setfont
+    1 setgray
+    pagenumstr dup
+    stringwidth pop dbw exch sub 2 div d_header_w dbw sub add
+    d_header_h .2 mul moveto show
+
+    % filename
+    0 setgray 
+    HeaderHDRF setfont
+    d_header_w fname stringwidth pop sub 2 div d_header_h 8 div moveto
+    fname show
+
+    % user supplied header string.
+    user_header_p {
+      /h d_header_h 8 div 5 mul def
+
+      % Implement strict enscript compatibility.
+      user_header_center_str () eq user_header_right_str () eq and {
+        d_header_w user_header_left_str stringwidth pop sub 2 div 
+        h moveto user_header_left_str show
+      } {
+        dbw 5 add h moveto user_header_left_str show
+
+        d_header_w user_header_center_str stringwidth pop sub 2 div 
+        h moveto user_header_center_str show
+
+	d_header_w dbw sub 5 sub user_header_right_str stringwidth pop
+	sub h moveto user_header_right_str show
+      } ifelse
+    } if
+
+  grestore
+} def
+%%EndResource
+/d_page_w 742 def
+/d_page_h 562 def
+/d_header_x 0 def
+/d_header_y 526 def
+/d_header_w 742 def
+/d_header_h 36 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 742 def
+/d_footer_h 0 def
+/d_output_w 742 def
+/d_output_h 526 def
+/cols 2 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+25 -587 translate
+/pagenum 1 def
+/fname (readme) def
+/fdir (.) def
+/ftail (readme) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (04/13/14) def
+/modtimestr (02:56:44) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+5 516 M
+(                                CS 61B Project 3) s
+5 508 M
+(             Weighted Undirected Graphs and Minimum Spanning Trees) s
+5 500 M
+(                       Due noon Wednesday, April 30, 2014) s
+5 484 M
+(This is a team project.  Form a team of 2 or 3 people.  No teams of 1 or teams) s
+5 476 M
+(of 4 or more are allowed.) s
+5 460 M
+(Copy the Project 3 directory by doing the following, starting from your home) s
+5 452 M
+(directory.) s
+5 436 M
+(    cp -r ~cs61b/hw/pj3 .) s
+5 420 M
+(A figure accompanies this "readme" as the files pj3graph.ps \(PostScript\) or) s
+5 412 M
+(pj3graph.pdf \(PDF\).  Both files are the same figure.  Print this figure and) s
+5 404 M
+(refer to it as you read the description below; the text will be much easier to) s
+5 396 M
+(understand with the figure sitting next to it.) s
+5 380 M
+(The purpose of this project is to become comfortable with applications that) s
+5 372 M
+(combine a variety of data structures and algorithms in a big ol' mess of) s
+5 364 M
+(references pointing just every which way.  I'm not even kidding.) s
+5 348 M
+(Part I:  Implement a Weighted Undirected Graph) s
+5 340 M
+(==============================================) s
+5 332 M
+(Implement a well-encapsulated ADT called WUGraph in a package called graph.) s
+5 324 M
+(A WUGraph represents a weighted, undirected graph in which self-edges are) s
+5 316 M
+(permitted.  Any object whatsoever can serve as a vertex of a WUGraph.) s
+5 300 M
+(For maximum speed, you must store edges in two data structures:  unordered) s
+5 292 M
+(doubly-linked adjacency lists and a hash table.  You are expected to support) s
+5 284 M
+(the following public methods in the running times specified.  \(You may ignore) s
+5 276 M
+(hash table resizing time when trying to achieve a specified running time--but) s
+5 268 M
+(your hash table should resize itself when necessary to keep the load factor) s
+5 260 M
+(roughly constant.\)  Below, |V| is the number of vertices in the graph, and) s
+5 252 M
+(d is the degree of the vertex in question.) s
+5 228 M
+(O\(1\)   WUGraph\(\);                construct a graph having no vertices or edges.) s
+5 220 M
+(O\(1\)   int vertexCount\(\);           return the number of vertices in the graph.) s
+5 212 M
+(O\(1\)   int edgeCount\(\);                return the number of edges in the graph.) s
+5 204 M
+(O\(|V|\) Object[] getVertices\(\);             return an array of all the vertices.) s
+5 196 M
+(O\(1\)   void addVertex\(Object\);                       add a vertex to the graph.) s
+5 188 M
+(O\(d\)   void removeVertex\(Object\);               remove a vertex from the graph.) s
+5 180 M
+(O\(1\)   boolean isVertex\(Object\);          is this object a vertex of the graph?) s
+5 172 M
+(O\(1\)   int degree\(Object\);                       return the degree of a vertex.) s
+5 164 M
+(O\(d\)   Neighbors getNeighbors\(Object\);        return the neighbors of a vertex.) s
+5 156 M
+(O\(1\)   void addEdge\(Object, Object, int\);      add an edge of specified weight.) s
+5 148 M
+(O\(1\)   void removeEdge\(Object, Object\);          remove an edge from the graph.) s
+5 140 M
+(O\(1\)   boolean isEdge\(Object, Object\);               is this edge in the graph?) s
+5 132 M
+(O\(1\)   int weight\(Object, Object\);              return the weight of this edge.) s
+5 108 M
+(A "neighbor" of a vertex is any vertex connected to it by an edge.  See the) s
+5 100 M
+(file graph/WUGraph.java for details of exactly how each of these methods should) s
+5 92 M
+(behave.) s
+5 76 M
+(Here are some of the design elements that will help achieve these goals.) s
+5 60 M
+([1]  A calling application can use any object whatsoever to be a "vertex" from) s
+5 52 M
+(     its point of view.  You will also need to have an internal object that) s
+5 44 M
+(     represents a vertex in a WUGraph and maintains its adjacency list; this) s
+5 36 M
+(     object is HIDDEN from the application.  Therefore, you will need a fast) s
+5 28 M
+(     way to map the application's vertex objects to your internal vertex) s
+5 20 M
+(     objects.  The best way to do this is to use the hash table you implemented) s
+5 12 M
+(     for Homework 6--modified so it resizes itself to keep the load factor) s
+5 4 M
+(     constant as |V| changes.  \(You may NOT use Java's built-in hash tables.\)) s
+376 516 M
+(     The hash table also makes it possible to support isVertex\(\) in O\(1\) time.) s
+376 500 M
+(     In Java, every object has a hashCode\(\) method.  The default hashCode\(\)) s
+376 492 M
+(     is defined in the Object class, and hashes the _reference_ to the Object.) s
+376 484 M
+(     \(This is not something you could do yourself, because Java does not give) s
+376 476 M
+(     you direct access to memory addresses.\)  This means that for some classes,) s
+376 468 M
+(     two distinct objects can act as different keys, even if their fields are) s
+376 460 M
+(     identical.  However, many object classes such as Integer and String) s
+376 452 M
+(     override hashCode\(\) so that items with the same fields are equals\(\).) s
+376 444 M
+(     Recall that Java has a convention that if two objects are equals\(\), they) s
+376 436 M
+(     have the same hash code; defying this convention tends to break hash) s
+376 428 M
+(     tables badly.  For the purposes of this project, two objects provided by) s
+376 420 M
+(     the calling application represent the same vertex if they are equals\(\).) s
+376 404 M
+([2]  To support getVertices\(\) in O\(|V|\) time, you will need to maintain a list) s
+376 396 M
+(     of vertices.  To support removeVertex\(\) in O\(d\) time, the list of vertices) s
+376 388 M
+(     should be doubly-linked.  getVertices\(\) returns the objects that were) s
+376 380 M
+(     provided by the calling application in calls to addVertex\(\), NOT the) s
+376 372 M
+(     WUGraph's internal vertex data structure\(s\), which should ALWAYS BE) s
+376 364 M
+(     HIDDEN.  Hence, each internal vertex representation must include) s
+376 356 M
+(     a reference to the corresponding object that the calling application is) s
+376 348 M
+(     using as a vertex.  \(See the dashed arrows in the accompanying figure.\)) s
+376 332 M
+(     Alternatively, you could implement getVertices\(\) by traversing your hash) s
+376 324 M
+(     table.  However, this runs in O\(|V|\) time ONLY if your hash table resizes) s
+376 316 M
+(     in both directions--specifically, it must shrink when the load factor) s
+376 308 M
+(     drops below a constant.  Otherwise, it will run too slowly if we add many) s
+376 300 M
+(     vertices to a graph \(causing your table to grow very large\) then remove) s
+376 292 M
+(     most of them.) s
+376 276 M
+([3]  To support getNeighbors\(\) in O\(d\) time, you will need to maintain an) s
+376 268 M
+(     adjacency list of edges for each vertex.  To support removeEdge\(\) in O\(1\)) s
+376 260 M
+(     time, each list of edges must be doubly-linked.) s
+376 244 M
+([4]  Because a WUGraph is undirected, each edge \(u, v\) must appear in two) s
+376 236 M
+(     adjacency lists \(unless u == v\):  u's and v's.  If we remove u from the) s
+376 228 M
+(     graph, we must remove every edge incident on u from the adjacency lists) s
+376 220 M
+(     of u's neighbors.  To support removeVertex\(\) in O\(d\) time, we cannot walk) s
+376 212 M
+(     through all these adjacency lists.  There are several ways you can obtain) s
+376 204 M
+(     O\(d\) running time, and you may use any of these options:) s
+376 188 M
+(          [i]  Since \(u, v\) appears in two lists, you could use two nodes to) s
+376 180 M
+(               represent \(u, v\); one in u's list, and one in v's list.) s
+376 172 M
+(               Each of these nodes might be called a "half-edge," and each is) s
+376 164 M
+(               the other's "partner."  Each half-edge has forward and backward) s
+376 156 M
+(               references to link it into an adjacency list.  Each half-edge) s
+376 148 M
+(               also maintains a reference to its partner.  That way, when you) s
+376 140 M
+(               remove u from the graph, you can traverse u's adjacency list and) s
+376 132 M
+(               use the partner references to find and remove each half-edge's) s
+376 124 M
+(               partner from the adjacency lists of u's neighbors in O\(1\) time) s
+376 116 M
+(               per edge.  This option is illustrated in the accompanying) s
+376 108 M
+(               figure, pj3graph.ps or pj3graph.pdf \(both figures are the same\).) s
+376 100 M
+(         [ii]  You could use just one object to represent \(u, v\), but equip it) s
+376 92 M
+(               with two "next" and two "prev" references.  However, you must) s
+376 84 M
+(               be careful to follow the right references as you traverse) s
+376 76 M
+(               a node's adjacency list.) s
+376 68 M
+(        [iii]  If you want to use an encapsulated DList class without changing) s
+376 60 M
+(               it, you could use just a single object to represent an edge,) s
+376 52 M
+(               and put this object into both adjacency lists.  The edge object) s
+376 44 M
+(               contains two DListNode references \(signifying its position in) s
+376 36 M
+(               each DList\), so it can extract itself from both adjacency lists) s
+376 28 M
+(               in O\(1\) time.) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+25 -587 translate
+/pagenum 2 def
+/fname (readme) def
+/fdir (.) def
+/ftail (readme) def
+% User defined strings:
+/pagenumstr (2) def
+/moddatestr (04/13/14) def
+/modtimestr (02:56:44) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+5 508 M
+([5]  To support removeEdge\(\), isEdge\(\), and weight\(\) in O\(1\) time, you will) s
+5 500 M
+(     need a _second_ hash table for edges.  The second hash table maps an) s
+5 492 M
+(     unordered pair of objects \(both representing application-supplied vertices) s
+5 484 M
+(     in the graph\) to your internal edge data structure.  \(If you are using) s
+5 476 M
+(     half-edges, following suggestion [4i] above, you could use the reference) s
+5 468 M
+(     from one half-edge to find the other.\)  To help you hash an edge in a) s
+5 460 M
+(     manner that does not depend on the order of the two vertices, I have) s
+5 452 M
+(     provided a class VertexPair.java designed for use as a key in hash tables.) s
+5 444 M
+(     The methods VertexPair.hashCode and VertexPair.equals are written so that) s
+5 436 M
+(     \(u, v\) and \(v, u\) are considered to be equal keys with the same hash code.) s
+5 428 M
+(     Read them, but don't change them unless you know what you're doing.) s
+5 420 M
+(     We recommend you use the VertexPair class as the key for your edge hash) s
+5 412 M
+(     table.  However, you are not required to do so, and you may change) s
+5 404 M
+(     VertexPair.java freely to suit your needs.) s
+5 388 M
+(     \(Technically, you don't need a second hash table; you could store vertices) s
+5 380 M
+(     and edges in the same hash table.  However, you risk confusing yourself;) s
+5 372 M
+(     having two separate hash tables eases debugging and reduces the likelihood) s
+5 364 M
+(     of human error.  But it's your decision.\)) s
+5 348 M
+(     To support removeVertex\(\) in O\(d\) time, you will need to remove the edges) s
+5 340 M
+(     incident on a vertex from the hash table as well as the adjacency lists.) s
+5 332 M
+(     You will also need to update the vertex degrees.  Hence, each edge or) s
+5 324 M
+(     half-edge should have references to the vertices it is incident on.) s
+5 308 M
+([6]  To support vertexCount\(\), edgeCount\(\), and degree\(\) in O\(1\) time, you will) s
+5 300 M
+(     need to maintain counts of the vertices, the edges, and the degree of each) s
+5 292 M
+(     vertex, and keep these counts updated with every operation.) s
+5 276 M
+(For those of you who are keeping score, my own Part I solution is 350 lines) s
+5 268 M
+(long, not counting the hash table code.) s
+5 252 M
+(Interfaces) s
+5 244 M
+(----------) s
+5 236 M
+(You may NOT change Neighbors.java or the signatures and behavior of) s
+5 228 M
+(WUGraph.java.  We will test that your WUGraph class correctly implements the) s
+5 220 M
+(interface we have specified.) s
+5 204 M
+(Neighbors.java is a class provided so the method WUGraph.getNeighbors\(\) can) s
+5 196 M
+(return two arrays at once.  That is its only purpose.  It is NOT appropriate to) s
+5 188 M
+(use the Neighbors class for any other purpose.  You CANNOT change it, because) s
+5 180 M
+(it is part of the interface of getNeighbors\(\), and calling programs \(including) s
+5 172 M
+(the autograder\) are relying on you to return Neighbors objects according to) s
+5 164 M
+(spec.  It appears as follows.) s
+5 148 M
+(  public class Neighbors {) s
+5 140 M
+(    public Object[] neighborList;) s
+5 132 M
+(    public int[] weightList;) s
+5 124 M
+(  }) s
+5 108 M
+(Given an input vertex, getNeighbors\(\) returns a Neighbors object.  neighborList) s
+5 100 M
+(is a list of all the vertices \(application-provided objects, not internal) s
+5 92 M
+(vertex representations\) connected by an edge to the input vertex \(including the) s
+5 84 M
+(input vertex itself if it has a self-edge\).  weightList lists the weight of) s
+5 76 M
+(each edge.  The length of both lists is the degree of the input vertex.) s
+5 68 M
+(getNeighbors\(\) should construct and return a _NEW_ Neighbors object every time) s
+5 60 M
+(it is called.) s
+5 44 M
+(Your WUGraph should be well-encapsulated:  no internal field or class used to) s
+5 36 M
+(represent your graph should be public.  The Neighbors class is public because) s
+5 28 M
+(it's part of the interface of the WUGraph ADT, and it's not part of the) s
+5 20 M
+(internal representation of your graph.) s
+376 508 M
+(Part II:  Kruskal's Algorithm for Minimum Spanning Trees) s
+376 500 M
+(========================================================) s
+376 492 M
+(Implement Kruskal's algorithm for finding the minimum spanning tree of a graph,) s
+376 484 M
+(in a package called graphalg.  Minimum spanning trees, and Kruskal's algorithm) s
+376 476 M
+(for constructing them, are discussed by Goodrich and Tamassia, Sections) s
+376 468 M
+(13.6-13.6.1.  Your algorithm should be embodied in a static method called) s
+376 460 M
+(minSpanTree\(\) in a class called Kruskal in a package called graphalg.  Your) s
+376 452 M
+(minSpanTree\(\) method should not violate the encapsulation of the WUGraph ADT,) s
+376 444 M
+(and should only access a WUGraph by calling the methods listed in Part I.  You) s
+376 436 M
+(may NOT add any public methods to the WUGraph class to make Part II easier) s
+376 428 M
+(\(e.g., a method that returns all the edges in a WUGraph\).  Remember this) s
+376 420 M
+(rule of encapsulation:  your Kruskal code should work correctly with the) s
+376 412 M
+(WUGraph code of any other group taking CS 61B, and your WUGraph code should) s
+376 404 M
+(work with their Kruskal code.) s
+376 388 M
+(The signature of minSpanTree\(\) is) s
+376 372 M
+(  public static WUGraph minSpanTree\(WUGraph g\);) s
+376 356 M
+(This method takes a WUGraph g and returns another, newly constructed WUGraph) s
+376 348 M
+(that represents the minimum spanning tree of g.  The original WUGraph g is NOT) s
+376 340 M
+(changed!  Let G be the graph represented by the WUGraph g.  Your implementation) s
+376 332 M
+(should run in O\(|V| + |E| log |E|\) time, where |V| is the number of vertices in) s
+376 324 M
+(G, and |E| is the number of edges in G.) s
+376 308 M
+(Kruskal's algorithm works as follows.) s
+376 292 M
+([1]  Create a new graph T having the same vertices as G, but no edges \(yet\).) s
+376 284 M
+(     Upon completion, T will be the minimum spanning tree of G.) s
+376 268 M
+([2]  Make a list of all the edges in G.  \(This can be an array or a linked) s
+376 260 M
+(     list; it's up to you.\)  You cannot build this list by calling isEdge\(\) on) s
+376 252 M
+(     every pair of vertices, because that would take O\(|V|^2\) time.  You will) s
+376 244 M
+(     need to use multiple calls to getNeighbors\(\) to obtain the complete list) s
+376 236 M
+(     of edges.) s
+376 220 M
+(     Note that your edge data structure should be defined separately from any) s
+376 212 M
+(     edge data structure you use in WUGraph.java \(Part I\).  Encapsulation) s
+376 204 M
+(     requires that the internal data structures of the WUGraph class not be) s
+376 196 M
+(     exposed to applications \(including Kruskal\).) s
+376 180 M
+([3]  Sort the edges by weight in O\(|E| log |E|\) time.  You may write the) s
+376 172 M
+(     sorting algorithm yourself or use one from your homework or lab, but do) s
+376 164 M
+(     NOT use a sorting method from the Java standard libraries.  \(Instead of) s
+376 156 M
+(     a sorting algorithm, you can instead use a priority queue as Goodrich and) s
+376 148 M
+(     Tamassia suggest, but sorting in advance is more straightforward and is) s
+376 140 M
+(     probably faster.\)) s
+376 124 M
+([4]  Finally, find the edges of T using disjoint sets, as described in Lecture) s
+376 116 M
+(     33 and Goodrich & Tamassia Section 11.4.  The disjoint sets code from) s
+376 108 M
+(     Lecture 33 is included in DisjointSets.java in the package called set.) s
+376 92 M
+(     To use the disjoint sets code, you will need a way to map the objects that) s
+376 84 M
+(     serve as vertices to unique integers.  Hash tables are a good way to) s
+376 76 M
+(     accomplish this.  \(You cannot use the same hash table as the WUGraph; that) s
+376 68 M
+(     hash table should be encapsulated so Kruskal can't access it.\)) s
+376 52 M
+(     Be forewarned that the DisjointSets class has no error checking, and will) s
+376 44 M
+(     fail catastrophically if you union\(\) two vertices that are not roots of) s
+376 36 M
+(     their respective sets, or if you union\(\) a vertex with itself.  If you) s
+376 28 M
+(     add simple error checking, it might save you a lot of debugging time \(here) s
+376 20 M
+(     and in Homework 9\).) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+90 rotate
+25 -587 translate
+/pagenum 3 def
+/fname (readme) def
+/fdir (.) def
+/ftail (readme) def
+% User defined strings:
+/pagenumstr (3) def
+/moddatestr (04/13/14) def
+/modtimestr (02:56:44) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+5 508 M
+(For those of you who are keeping score, my own Part II solution is 100 lines) s
+5 500 M
+(long, not counting the sorting method or the hash table code.) s
+5 484 M
+(Since Parts I and II are on opposite sides of the WUGraph interface, a partner) s
+5 476 M
+(can easily begin Part II before Part I is working.) s
+5 460 M
+(Style Rules) s
+5 452 M
+(===========) s
+5 444 M
+(You will be graded on style, documentation, efficiency, and the use of) s
+5 436 M
+(encapsulation.) s
+5 420 M
+(  1\)  Every method must be preceded by a comment describing its behavior) s
+5 412 M
+(      unambiguously.  These comments must include descriptions of what each) s
+5 404 M
+(      parameter is for, and what the method returns \(if anything\).) s
+5 396 M
+(      They must also include a description of what the method does \(though) s
+5 388 M
+(      not how it does it\) detailed enough that somebody else could implement) s
+5 380 M
+(      a method that does the same thing from scratch.) s
+5 372 M
+(  2\)  All classes, fields, and methods must have the proper public/private/) s
+5 364 M
+(      protected/package qualifier.  We will deduct points if you make things) s
+5 356 M
+(      public that could conceivably allow a user to corrupt the data structure.) s
+5 348 M
+(  3\)  We will deduct points for code that does not match the following style) s
+5 340 M
+(      guidelines.) s
+5 324 M
+(  - Classes that contain extraneous debugging code, print statements, or) s
+5 316 M
+(    meaningless comments that make the code hard to read will be penalized.) s
+5 308 M
+(    \(It's okay to have methods whose sole purpose is to contain lots of) s
+5 300 M
+(    debugging code, so long as your comments inform the reader who grades your) s
+5 292 M
+(    project that he can skip those methods.  These methods should not contain) s
+5 284 M
+(    anything necessary to the functioning of your project.\)) s
+5 276 M
+(  - Your file should be indented in the manner enforced by Emacs \(e.g., a) s
+5 268 M
+(    two-space or four-space indentation inside braces\), and used in the lecture) s
+5 260 M
+(    notes throughout the semester.  The indentation should clearly show the) s
+5 252 M
+(    structure of nested statements like loops and if statements.  Sloppy) s
+5 244 M
+(    indentation will be penalized.) s
+5 236 M
+(  - All if, else, while, do, and for statements should use braces.) s
+5 228 M
+(  - All classes start with a capital letter, all methods and \(non-final\) data) s
+5 220 M
+(    fields start with a lower case letter, and in both cases, each new word) s
+5 212 M
+(    within the name starts with a capital letter.  Constants \(final fields\) are) s
+5 204 M
+(    all-capital-letters only.) s
+5 196 M
+(  - Numerical constants with special meaning should always be represented by) s
+5 188 M
+(    all-caps "final static" constants.) s
+5 180 M
+(  - All class, method, field, and variable names should be meaningful to a) s
+5 172 M
+(    human reader.  \(Exception:  short loop index variables like "i" are okay if) s
+5 164 M
+(    their meaning is obvious from context.\)) s
+5 156 M
+(  - Methods should not exceed about 100 lines; any method that long can) s
+5 148 M
+(    probably be broken up into logical pieces.  The same is probably true for) s
+5 140 M
+(    any method that needs more than 8 levels of indentation.) s
+5 132 M
+(  - Avoid unnecessary duplicated code; if you use the same \(or very similar\)) s
+5 124 M
+(    fifteen lines of code in two different places, those lines should probably) s
+5 116 M
+(    be a separate method call.) s
+5 108 M
+(  - Programs should be easy to read.) s
+376 508 M
+(The Autograders) s
+376 500 M
+(===============) s
+376 492 M
+(If possible, make sure that your program passes both of the test programs) s
+376 484 M
+(provided, WUGTest.java and KruskalTest.java.  IMPORTANT NOTE:  If you attempt) s
+376 476 M
+(to cheat and thwart the test code by writing code that looks for specific tests) s
+376 468 M
+(and provides canned answers, rather than by writing code that correctly) s
+376 460 M
+(implements a weighted undirected graph data structure and Kruskal's algorithm,) s
+376 452 M
+(the graders will notice, and you will receive a score of -20 and a letter at) s
+376 444 M
+(the Office of Student Conduct.  Please don't try it.) s
+376 428 M
+(Submitting your Solution) s
+376 420 M
+(========================) s
+376 412 M
+(Write a file called GRADER that briefly documents your data structures and the) s
+376 404 M
+(design decisions you made in WUGraph.java and Kruskal.java that extend or) s
+376 396 M
+(depart from those discussed here.  In particular, tell us what choices you made) s
+376 388 M
+(in your implementation to ensure that removeVertex\(\) runs in O\(d\) time \(as) s
+376 380 M
+(described in Part I, design element [4]\) and getVertices\(\) runs in O\(|V|\) time) s
+376 372 M
+(\(design element [2]\).) s
+376 356 M
+(Designate one member of your team to submit the project.  If you resubmit, the) s
+376 348 M
+(project should always be submitted by the same student.  If for some reason a) s
+376 340 M
+(different partner must submit \(because the designated member is out of town,) s
+376 332 M
+(for instance\), you must send cs61b@cory.eecs a listing of your team members,) s
+376 324 M
+(explaining which of them have submitted the project and why.  Let us know which) s
+376 316 M
+(submission you want graded.) s
+376 300 M
+(The designated teammate only:  make sure your project compiles and runs on the) s
+376 292 M
+(_lab_ machines \(with WUGTest and KruskalTest\) just before you submit.) s
+376 284 M
+(Change \(cd\) to your pj3 directory, which should contain your GRADER, the graph) s
+376 276 M
+(directory \(package\), the graphalg directory \(package\), the set directory) s
+376 268 M
+(\(package\), the dict directory \(package\) containing your hash table, and) s
+376 260 M
+(possibly a list directory \(package\) if you choose to use an encapsulated list) s
+376 252 M
+(ADT.  The graph directory should contain your WUGraph.java and \(if you use it\)) s
+376 244 M
+(VertexPair.java.  The graphalg directory should contain your Kruskal.java.) s
+376 236 M
+(The set directory should contain whatever code you are using for disjoint sets.) s
+376 220 M
+(If you are using VertexPair.java and/or DisjointSets.java, you must submit them) s
+376 212 M
+(because you're allowed to change them; the autograder won't supply the original) s
+376 204 M
+(files.  Make sure any other files your project needs, including a dictionary) s
+376 196 M
+(ADT and possibly a list ADT, are present as well.  You won't be able to submit) s
+376 188 M
+(Neighbors.java, because you're not allowed to change it.) s
+376 172 M
+(Type "submit pj3".  You may submit as often as you like.  Only the last version) s
+376 164 M
+(you submit will be graded, unless you send email to cs61b@cory.eecs asking that) s
+376 156 M
+(an earlier version be graded.) s
+_R
+S
+%%Trailer
+%%Pages: 3
+%%DocumentNeededResources: font Times-Roman Courier-Bold Courier 
+%%+ font Times-Bold 
+%%EOF

@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.params=a\ b\ w
+comment0.target=Edge(java.lang.Object,\ java.lang.Object,\ int)
+comment1.params=
+comment1.target=java.lang.Object\ object1()
+comment2.params=
+comment2.target=java.lang.Object\ object2()
+comment3.params=
+comment3.target=int\ weight()
+comment4.params=o
+comment4.target=boolean\ equals(java.lang.Object)
+comment5.params=o
+comment5.target=int\ compareTo(java.lang.Object)
+comment6.params=
+comment6.target=java.lang.String\ toString()
+numComments=7

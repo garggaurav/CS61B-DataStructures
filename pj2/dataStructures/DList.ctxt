@@ -1,0 +1,22 @@
+#BlueJ class context
+comment0.params=
+comment0.target=DList()
+comment1.params=
+comment1.target=DListNode\ head()
+comment2.params=
+comment2.target=int\ size()
+comment3.params=item
+comment3.target=DListNode\ add(java.lang.Object)
+comment4.params=item
+comment4.target=DListNode\ delete(java.lang.Object)
+comment5.params=item
+comment5.target=java.lang.Object\ find(java.lang.Object)
+comment6.params=toDelete
+comment6.target=java.lang.Object\ delete(DListNode)
+comment7.params=
+comment7.target=java.lang.String\ toString()
+comment8.params=
+comment8.target=java.lang.Object[]\ toArr()
+comment9.params=args
+comment9.target=void\ main(java.lang.String[])
+numComments=10

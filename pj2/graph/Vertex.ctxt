@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.params=n
+comment0.target=Vertex(java.lang.Object)
+comment1.params=e
+comment1.target=void\ addEdge(Edge)
+comment2.params=e
+comment2.target=void\ removeEdge(Edge)
+comment3.params=
+comment3.target=int\ degree()
+comment4.params=
+comment4.target=java.lang.String\ toString()
+numComments=5

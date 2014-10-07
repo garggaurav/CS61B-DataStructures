@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.params=
+comment0.target=DListNode()
+comment1.params=item
+comment1.target=DListNode(java.lang.Object)
+comment2.params=item\ prev\ next
+comment2.target=DListNode(java.lang.Object,\ DListNode,\ DListNode)
+comment3.params=
+comment3.target=java.lang.Object\ item()
+comment4.params=
+comment4.target=DListNode\ next()
+comment5.params=
+comment5.target=DListNode\ prev()
+comment6.params=
+comment6.target=java.lang.String\ toString()
+numComments=7
