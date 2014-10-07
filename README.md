@@ -1,7 +1,3 @@
-Here's a [PostScript version](overview.ps) and a [PDF
-version](overview.pdf) of this page. They're much more nicely typeset
-than the rubbish you'll get if you use your browser to print this page.
-
 * * * * *
 
 [CS 61B: Data Structures](index.html) (Spring 2014)\
