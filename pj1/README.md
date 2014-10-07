@@ -1,13 +1,17 @@
 To Run:
+
 Compile Sobel.java (javac Sobel.java).
+
 Run Sobel (java Sobel arg1 arg2 arg3).
+
 arg1 (String): Name of file (image.tiff).
+
 (Optional) arg2 (int): Number of times the blurring algorithm is run on the image. If no argument is
 given, the image will not be blurred.
+
 (Optional) arg3 (String): If the Sobel program is given three (or more) command-line arguments,
-regardless of what the third argument is, it will write the grayscale-edge.
-image twice, once as an uncompressed TIFF file and once as a run-length encoded
-TIFF file.
+regardless of what the third argument is, it will write the grayscale-edge image twice,
+once as an uncompressed TIFF file and once as a run-length encoded TIFF file.
 
 
 Example: java Sobel highcontrast.tiff 1 compress
